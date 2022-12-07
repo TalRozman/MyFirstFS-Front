@@ -12,7 +12,7 @@
     Gate: <input id="gate"><br>
     STD: <input id="std"><br>
     ETD: <input id="etd"><br>
-    <button onclick="addData();loadData();">Add Flight</button>
+    <button onclick="addData();loadData()">Add Flight</button>
 
     <div id="display"></div>
 
@@ -24,21 +24,24 @@
         const loadData = async() => {
             const res = await axios.get(MY_SERVER)
             display.innerHTML = (res.data.map(flight =>`<h1> <button onclick="delData(${flight["id"]});loadData();">Delete Row</button> <button onclick="updData(${flight["id"]});loadData();">Update Row</button><br> ID: ${flight["id"]}<br> Terminal: ${flight["terminal"]}<br>Flight number: ${flight["flight_num"]}<br> Gate: ${flight["gate"]}<br> Scheduled Departure Time: ${flight["std"]}<br> Estimate Departure Time: ${flight["etd"]}</h1><hr>`).join(""))
-            console.log(res.data) //display date  in console
+            console.log(res.data) //display data in console
         }
         loadData()
 
-        const addData = () => {
-            axios.post(MY_SERVER, {terminal: terminal.value, flight_num: flight_num.value, gate: gate.value,std: std.value})
+        const addData = async () => {
+            await axios.post(MY_SERVER, {terminal: terminal.value, flight_num: flight_num.value, gate: gate.value,std: std.value})
+            location.reload()
         }
 
-        const delData = (id) => {
+        const delData = async (id) => {
             console.log(id)
-            axios.delete(MY_SERVER + id).then((res) => display.innerHTML = `<h1>product ${id} deleted</h1>`)
+            await axios.delete(MY_SERVER + id).then((res) => display.innerHTML = `<h1>product ${id} deleted</h1>`)
+            location.reload()
         }
 
         const updData = async (id) => {
             await axios.put(MY_SERVER + id, {terminal: terminal.value, gate: gate.value,etd: etd.value})
+            location.reload()
         }
 
     </script>
