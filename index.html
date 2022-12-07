@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
     Terminal: <input id="terminal"><br>
     Flight Number: <input id="flight_num"><br>
@@ -16,20 +18,43 @@
 
     <div id="display"></div>
 
+
     <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
 
     <script>
         const MY_SERVER = "https://my-full-stack.onrender.com/"
 
-        const loadData = async() => {
+        const loadData = async () => {
             const res = await axios.get(MY_SERVER)
-            display.innerHTML = (res.data.map(flight =>`<h1> <button onclick="delData(${flight["id"]});loadData();">Delete Row</button> <button onclick="updData(${flight["id"]});loadData();">Update Row</button><br> ID: ${flight["id"]}<br> Terminal: ${flight["terminal"]}<br>Flight number: ${flight["flight_num"]}<br> Gate: ${flight["gate"]}<br> Scheduled Departure Time: ${flight["std"]}<br> Estimate Departure Time: ${flight["etd"]}</h1><hr>`).join(""))
-            console.log(res.data) //display data in console
+            let html = `
+            <table border=1 width=100% style="text-align:center;">
+                <tr>
+                    <th>Action</th>
+                    <th>ID</th>
+                    <th>Terminal</th>
+                    <th>Flight Number</th>
+                    <th>Gate</th>
+                    <th>Scheduled Departure Time</th>
+                    <th>Estimate Departure Time</th>
+                </tr>`;
+            html += (res.data.map(flight =>
+            `<tr>
+                <td><button onclick="delData(${flight["id"]});loadData();">Delete Row</button><button onclick="updData(${flight["id"]});loadData();">Update Row</button></td>
+                <td>${flight["id"]}</td>
+                <td>${flight["terminal"]}</td>
+                <td>${flight["flight_num"]}</td>
+                <td>${flight["gate"]}</td>
+                <td>${flight["std"]}</td>
+                <td>${flight["etd"]}</td>
+            </tr>`)).join("<br>")
+            html += "</table>"
+
+            document.getElementById("display").innerHTML = html;
         }
         loadData()
 
         const addData = async () => {
-            await axios.post(MY_SERVER, {terminal: terminal.value, flight_num: flight_num.value, gate: gate.value,std: std.value})
+            await axios.post(MY_SERVER, { terminal: terminal.value, flight_num: flight_num.value, gate: gate.value, std: std.value })
             location.reload()
         }
 
@@ -40,11 +65,12 @@
         }
 
         const updData = async (id) => {
-            await axios.put(MY_SERVER + id, {terminal: terminal.value, gate: gate.value,etd: etd.value})
+            await axios.put(MY_SERVER + id, { terminal: terminal.value, gate: gate.value, etd: etd.value })
             location.reload()
         }
 
     </script>
 
 </body>
+
 </html>
