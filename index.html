@@ -55,18 +55,18 @@
 
         const addData = async () => {
             await axios.post(MY_SERVER, { terminal: terminal.value, flight_num: flight_num.value, gate: gate.value, std: std.value })
-            location.reload()
+            await location.reload()
         }
 
         const delData = async (id) => {
             console.log(id)
-            await axios.delete(MY_SERVER + id).then((res) => display.innerHTML = `<h1>product ${id} deleted</h1>`)
-            location.reload()
+            await axios.delete(MY_SERVER + id)
+            await location.reload()
         }
 
         const updData = async (id) => {
             await axios.put(MY_SERVER + id, { terminal: terminal.value, gate: gate.value, etd: etd.value })
-            location.reload()
+            await location.reload()
         }
 
     </script>
